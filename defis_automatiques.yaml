@@ -1,15 +1,21 @@
 blueprint:
-  name: Défis Hilo automatiques
-  description: Optimise les températures basées sur les défis Hilo
+  name: Défis Hilo - Automatisation Directe
+  description: Combine la gestion des défis Hilo sans utiliser une entité intermédiaire
   domain: automation
 
   input:
-    challenge_entity:
-      name: Entité de phase de défi
-      description: Input_text entity thas was manualy created
+    default_challenge_entity:
+      name: Entité de défi par défaut (pour la phase de refroidissement)
       selector:
         entity:
-          domain: input_text
+          domain: sensor
+
+    do_pre_heat:
+      name: Activer le pré-chauffage
+      description: Pré-chauffer avant la réduction
+      default: true
+      selector:
+        boolean:
 
     challenge_am:
       name: Défi AM
@@ -49,10 +55,17 @@ blueprint:
           domain: switch
           multiple: true
 
-    bool_ref:
-      name: Défis seulement ou Défis et Appréciations 
-      description: Désactive les autres équipements durant les défis seulement (False) ou durant les défis ET les phases d'appréciation de référence (True)
-      default: False
+    bool_ref_water_heater:
+      name: Chauffe eau - Défis seulement ou Refroidissment et Défis 
+      description: Désactive le chauffe eaux durant les défis seulement (False) ou désactiver durant la phase de refroidissement, puis réactivation durant la phase d'appréciation avec de désactiver pour les défis (True)
+      default: false
+      selector:
+        boolean:
+        
+    bool_ref_other:
+      name: Autres Équipements - Défis seulement ou Refroidissment et Défis 
+      description: Désactive les autres équipements durant les défis seulement (False) ou désactiver durant la phase de refroidissement, puis réactivation durant la phase d'appréciation avec de désactiver pour les défis (True)
+      default: false
       selector:
         boolean:
 
@@ -134,12 +147,15 @@ blueprint:
           unit_of_measurement: °C
 
 trigger:
-  - platform: state
-    entity_id: !input challenge_entity
+  - platform: time_pattern
+    minutes: /1
 
 variables:
+  do_pre_heat: !input do_pre_heat
   water_heater: !input water_heater
   other_devices: !input other_devices
+  bool_ref_water_heater: !input bool_ref_water_heater
+  bool_ref_other: !input bool_ref_other
   challenge_am: !input challenge_am
   challenge_pm: !input challenge_pm
 
@@ -163,32 +179,19 @@ action:
         sequence:
           - choose:
               - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: ref_appreciation
-                sequence:
-                  - service: climate.set_temperature
-                    data:
-                      temperature: !input appreciation_reference_temp
-                    target:
-                      entity_id: !input thermostats
-                  - choose:
-                      - conditions: "{{ water_heater|length > 0 }}"
-                        sequence:
-                          - service: switch.turn_on
-                            target:
-                              entity_id: !input water_heater
-                  - choose:
-                      - conditions: "{{ other_devices|length > 0 }}"
-                        sequence:
-                          - service: switch.turn_on
-                            target:
-                              entity_id: !input other_devices
-
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: appreciation
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "01:00:00"
+                            before: "04:00:00"
+                          - condition: time
+                            after: "12:00:00"
+                            before: "15:00:00"
+                      - condition: state
+                        entity_id: !input default_challenge_entity
+                        state: "appreciation"
                 sequence:
                   - service: climate.set_temperature
                     data:
@@ -208,10 +211,53 @@ action:
                             target:
                               entity_id: !input other_devices
 
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: cooling
+                - conditions:
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "01:00:00"
+                            before: "04:00:00"
+                          - condition: time
+                            after: "12:00:00"
+                            before: "15:00:00"
+                      - condition: state
+                        entity_id: !input default_challenge_entity
+                        state: "off"
+                sequence:
+                  - service: climate.set_temperature
+                    data:
+                      temperature: !input appreciation_reference_temp
+                    target:
+                      entity_id: !input thermostats
+                  - choose:
+                      - conditions: "{{ water_heater|length > 0 }}"
+                        sequence:
+                          - service: switch.turn_on
+                            target:
+                              entity_id: !input water_heater
+                  - choose:
+                      - conditions: "{{ other_devices|length > 0 }}"
+                        sequence:
+                          - service: switch.turn_on
+                            target:
+                              entity_id: !input other_devices
+
+                - conditions:
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "00:00:00"
+                            before: "01:00:00"
+                          - condition: time
+                            after: "11:00:00"
+                            before: "12:00:00"
+                      - condition: state
+                        entity_id: !input default_challenge_entity
+                        state: "pre_cold"
                 sequence:
                   - service: climate.set_temperature
                     data:
@@ -219,7 +265,9 @@ action:
                     target:
                       entity_id: !input thermostats
                   - choose:
-                      - conditions: "{{ water_heater|length > 0 }}"
+                      - conditions: 
+                        - "{{ water_heater|length > 0 }}"
+                        - "{{ bool_ref_water_heater | bool }}"
                         sequence:
                           - service: switch.turn_off
                             target:
@@ -227,16 +275,26 @@ action:
                   - choose:
                       - conditions: 
                         - "{{ other_devices|length > 0 }}"
-                        - "{{ bool_ref == True }}"
+                        - "{{ bool_ref_other | bool }}"
                         sequence:
                           - service: switch.turn_off
                             target:
                               entity_id: !input other_devices
 
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: ref_challenge
+                - conditions:
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "06:00:00"
+                            before: "10:00:00"
+                          - condition: time
+                            after: "17:00:00"
+                            before: "21:00:00"
+                      - condition: state
+                        entity_id: !input default_challenge_entity
+                        state: "off"
                 sequence:
                   - service: climate.set_temperature
                     data:
@@ -256,10 +314,25 @@ action:
                             target:
                               entity_id: !input other_devices
 
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: challenge
+                - conditions:
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "06:00:00"
+                            before: "10:00:00"
+                          - condition: time
+                            after: "17:00:00"
+                            before: "21:00:00"
+                      - condition: or
+                        conditions:
+                          - condition: state
+                            entity_id: !input default_challenge_entity
+                            state: "reduction"
+                          - condition: state
+                            entity_id: !input default_challenge_entity
+                            state: "on"
                 sequence:
                   - service: climate.set_temperature
                     data:
@@ -279,10 +352,22 @@ action:
                             target:
                               entity_id: !input other_devices
 
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: preheat
+                - conditions:
+                  - condition: and
+                    conditions:
+                      - condition: or
+                        conditions:
+                          - condition: time
+                            after: "04:00:00"
+                            before: "06:00:00"
+                          - condition: time
+                            after: "15:00:00"
+                            before: "17:00:00"
+                      - condition: state
+                        entity_id: !input default_challenge_entity
+                        state: "pre_heat"
+                      - condition: template
+                        value_template: "{{ do_pre_heat | bool }}"
                 sequence:
                   - service: climate.set_temperature
                     data:
@@ -302,29 +387,6 @@ action:
                             target:
                               entity_id: !input other_devices
 
-              - conditions:
-                  condition: state
-                  entity_id: !input challenge_entity
-                  state: normal
-                sequence:
-                  - service: climate.set_temperature
-                    data:
-                      temperature: !input normal_temp
-                    target:
-                      entity_id: !input thermostats
-                  - choose:
-                      - conditions: "{{ water_heater|length > 0 }}"
-                        sequence:
-                          - service: switch.turn_on
-                            target:
-                              entity_id: !input water_heater
-                  - choose:
-                      - conditions: "{{ other_devices|length > 0 }}"
-                        sequence:
-                          - service: switch.turn_on
-                            target:
-                              entity_id: !input other_devices
-                              
     default:
       - service: climate.set_temperature
         data:
