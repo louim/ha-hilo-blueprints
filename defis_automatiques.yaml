@@ -1,6 +1,6 @@
 blueprint:
-  name: Défis Hilo - Automatisation Directe
-  description: Combine la gestion des défis Hilo sans utiliser une entité intermédiaire
+  name: Défis Hilo - Automatisation des defis
+  description: Gestion des défis Hilo en une automatisation
   domain: automation
 
   input:
