@@ -192,6 +192,7 @@ action:
                       - condition: state
                         entity_id: !input default_challenge_entity
                         state: "appreciation"
+
                 sequence:
                   - service: climate.set_temperature
                     data:
