@@ -14,7 +14,7 @@ Vous allez avoir besoin de l'intégration [Hilo](https://github.com/dvd-dev/hilo
 ### Installation des "Blueprints"
 Installez le blueprints avec ces liens:
 
-* Défi automatiques: [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Farim215%2Fha-hilo-blueprints%2Fsingle-file%2Fdefis_automatiques.yaml)
+* Défi automatiques: [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Farim215%2Fha-hilo-blueprints%2Fsingle-file%2Fdefis_hilo_automatiques.yaml)
 
 
 ## Contribution
