@@ -32,9 +32,6 @@ Si vous voulez améliorer, gênez-vous pas! Présentement, j'aimerais ajouter un
 
 ## À faire:
 
-La liste n'est pas complète, si vous avez des idées, envoyez une Pull Request ;)
+Si vous avez des idées, partagez-les.
 
-~~* Combiner les 2 blueprints en 1 seul et simplifier le code~~
-* Ajouter des Blueprints pour des notifications avec des estimés et des résultats
-~~* Compléter le README avec les détails sur comment les automatisations sont configurées~~
-~~* Ajouter une manière de contrôler la charge d'un véhicule électrique durant les défis~~ (peuvent être mis dans autres équipements) 
+* Ajouter des notifications quand des défis sont planifiés/débutent/finissent
