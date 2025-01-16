@@ -1,5 +1,7 @@
 # Blueprints pour les challenges Hilo
-Blueprints pour Home Assistant pour utiliser l'intégration Hilo facilement. Vous allez être en mesure d'automatiser la température cible de vos thermostats pour augmenter vos récompenses Hilo
+Blueprint pour Home Assistant pour utiliser l'intégration Hilo facilement. Vous allez être en mesure d'automatiser la température cible de vos thermostats pour augmenter vos récompenses Hilo. Vous pouvez choisir de participer aux défis du matin et/ou aux défis du soir. Vous pourrez aussi controller votre chauffe-eau et d'autre équipement de type "switch" comme une laveuse, sécheuse ou chargeur de véhicule électrique. 
+
+Ce blueprint est basé sur ceux de @Eradash.
 
 ## Configuration
 ### L'application Hilo
@@ -32,7 +34,7 @@ Si vous voulez améliorer, gênez-vous pas! Présentement, j'aimerais ajouter un
 
 La liste n'est pas complète, si vous avez des idées, envoyez une Pull Request ;)
 
-* Combiner les 2 blueprints en 1 seul et simplifier le code
+~~* Combiner les 2 blueprints en 1 seul et simplifier le code~~
 * Ajouter des Blueprints pour des notifications avec des estimés et des résultats
-* Compléter le README avec les détails sur comment les automatisations sont configurées
-* Ajouter une manière de contrôler la charge d'un véhicule électrique durant les défis
+~~* Compléter le README avec les détails sur comment les automatisations sont configurées~~
+~~* Ajouter une manière de contrôler la charge d'un véhicule électrique durant les défis~~ (peuvent être mis dans autres équipements) 
