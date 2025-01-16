@@ -11,6 +11,7 @@ Pour un fonctionnement optimal, désactivez la prise en charge des thermostats p
 Vous allez avoir besoin de l'intégration [Hilo](https://github.com/dvd-dev/hilo) pour que ces Blueprints fonctionnent
 
 **La période d'appréciation doit être de 3 heures si désiré. Vous pouvez le mettre dans la configuration de l'intégration Hilo**
+
 **La période de refroidissement avant la période d'appréciation doit être de 1 heures si désiré. Vous pouvez le mettre dans la configuration de l'intégration Hilo**
 
 ### Installation des "Blueprints"
