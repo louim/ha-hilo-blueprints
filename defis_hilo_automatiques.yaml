@@ -56,14 +56,14 @@ blueprint:
           multiple: true
 
     bool_ref_water_heater:
-      name: Chauffe eau - Défis seulement ou Refroidissment et Défis 
+      name: Chauffe eau - Défis seulement ou Refroidissment et Défis
       description: Désactive le chauffe eaux durant les défis seulement (False) ou désactiver durant la phase de refroidissement, puis réactivation durant la phase d'appréciation avec de désactiver pour les défis (True)
       default: false
       selector:
         boolean:
-        
+
     bool_ref_other:
-      name: Autres Équipements - Défis seulement ou Refroidissment et Défis 
+      name: Autres Équipements - Défis seulement ou Refroidissment et Défis
       description: Désactive les autres équipements durant les défis seulement (False) ou désactiver durant la phase de refroidissement, puis réactivation durant la phase d'appréciation avec de désactiver pour les défis (True)
       default: false
       selector:
@@ -179,7 +179,6 @@ action:
 
         sequence:
           - choose:
-              #APPRECIATION ET REF-APPRECIATION#########################################################################
               - conditions:
                 - condition: or
                   conditions:
@@ -191,6 +190,7 @@ action:
                       before: "15:00:00"
                 sequence:
                   - choose:
+                      #Condition d'APPRECIATION ou de REF-APPRECIATION#
                       - conditions:
                           - condition: state
                             entity_id: !input default_challenge_entity
@@ -231,8 +231,8 @@ action:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input other_devices
-              
-              #PRE-COLD##########################################################################
+
+             #Condition de PRE-COLD si active dans l'integration Hilo#
               - conditions:
                 - condition: or
                   conditions:
@@ -288,8 +288,8 @@ action:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input other_devices
-                
-              #REF-REDUCTION##########################################################################
+
+              # Condition de REF-REDUCTION ou REDUCTION (DEFI)#
               - conditions:
                 - condition: or
                   conditions:
@@ -348,7 +348,7 @@ action:
                                 target:
                                   entity_id: !input other_devices
 
-              #PRE-HEAT##########################################################################
+              #Condition de PRE-HEAT si active#
               - conditions:
                 - condition: or
                   conditions:
@@ -421,8 +421,7 @@ action:
                       - service: switch.turn_on
                         target:
                           entity_id: !input other_devices
-        
-####################################################################################################
+
     default:
       - service: climate.set_temperature
         data:
