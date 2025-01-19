@@ -177,7 +177,8 @@ triggers:
   - trigger: time
     at: "21:00:01"
   - plateform: state
-    entity_id: !input default_challenge_entity
+    entity_id: 
+     - !input default_challenge_entity
 
 variables:
   do_pre_heat: !input do_pre_heat
