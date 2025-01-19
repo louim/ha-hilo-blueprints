@@ -146,15 +146,13 @@ blueprint:
           max: 25
           unit_of_measurement: °C
 triggers:
-  trigger:
-    - platform: time_pattern
-      hours: "*"
-      minutes: "0"
-      seconds: "10"
-  trigger:
-    - plateform: state
-      entity_id: 
-        - !input default_challenge_entity
+  - trigger: time_pattern
+    hours: "*"
+    minutes: "0"
+    seconds: "10"
+  - trigger: state
+    entity_id: 
+      - !input default_challenge_entity
 
 #trigger:
 #  - platform: time_pattern
