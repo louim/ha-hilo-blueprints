@@ -146,9 +146,38 @@ blueprint:
           max: 25
           unit_of_measurement: °C
 
-trigger:
-  - platform: time_pattern
-    minutes: /1
+#trigger:
+#  - platform: time_pattern
+#    minutes: /1
+triggers:
+  - trigger: time
+    at: "00:00:01"
+  - trigger: time
+    at: "01:00:01"
+  - trigger: time
+    at: "04:00:01"
+  - trigger: time
+    at: "06:00:01"
+  - trigger: time
+    at: "10:00:01"
+  - trigger: time
+    at: "11:00:01"
+  - trigger: time
+    at: "12:00:01"
+  - trigger: time
+    at: "13:00:01"
+  - trigger: time
+    at: "15:00:01"
+  - trigger: time
+    at: "16:00:01"
+  - trigger: time
+    at: "17:00:01"
+  - trigger: time
+    at: "18:00:01"
+  - trigger: time
+    at: "21:00:01"
+  - plateform: state
+    entity_id: !input default_challenge_entity
 
 variables:
   do_pre_heat: !input do_pre_heat
