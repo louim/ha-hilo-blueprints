@@ -242,60 +242,32 @@ action:
 
              #Condition de PRE-COLD si active dans l'integration Hilo#
               - conditions:
-                - condition: or
-                  conditions:
-                    - condition: time
-                      after: "00:00:00"
-                      before: "01:00:00"
-                    - condition: time
-                      after: "11:00:00"
-                      before: "12:00:00"
+                  - condition: state
+                    entity_id: !input default_challenge_entity
+                    state: "pre_cold"
                 sequence:
+                  - service: climate.set_temperature
+                    data:
+                      temperature: !input cooling_temp
+                    target:
+                      entity_id: !input thermostats
                   - choose:
                       - conditions:
-                          - condition: state
-                            entity_id: !input default_challenge_entity
-                            state: "pre_cold"
+                          - "{{ water_heater|length > 0 }}"
+                          - "{{ bool_ref_water_heater | bool }}"
                         sequence:
-                          - service: climate.set_temperature
-                            data:
-                              temperature: !input cooling_temp
+                          - service: switch.turn_off
                             target:
-                              entity_id: !input thermostats
-                          - choose:
-                              - conditions:
-                                  - "{{ water_heater|length > 0 }}"
-                                  - "{{ bool_ref_water_heater | bool }}"
-                                sequence:
-                                  - service: switch.turn_off
-                                    target:
-                                      entity_id: !input water_heater
-                          - choose:
-                              - conditions:
-                                  - "{{ other_devices|length > 0 }}"
-                                  - "{{ bool_ref_other | bool }}"
-                                sequence:
-                                  - service: switch.turn_off
-                                    target:
-                                      entity_id: !input other_devices
-                    default:
-                      - service: climate.set_temperature
-                        data:
-                          temperature: !input normal_temp
-                        target:
-                          entity_id: !input thermostats
-                      - choose:
-                          - conditions: "{{ water_heater|length > 0 }}"
-                            sequence:
-                              - service: switch.turn_on
-                                target:
-                                  entity_id: !input water_heater
-                      - choose:
-                          - conditions: "{{ other_devices|length > 0 }}"
-                            sequence:
-                              - service: switch.turn_on
-                                target:
-                                  entity_id: !input other_devices
+                              entity_id: !input water_heater
+                  - choose:
+                      - conditions:
+                          - "{{ other_devices|length > 0 }}"
+                          - "{{ bool_ref_other | bool }}"
+                        sequence:
+                          - service: switch.turn_off
+                            target:
+                              entity_id: !input other_devices
+                        
 
               # Condition de REF-REDUCTION ou REDUCTION (DEFI)#
               - conditions:
