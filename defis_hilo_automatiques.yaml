@@ -151,7 +151,7 @@ triggers:
     minutes: "0"
     seconds: "10"
   - trigger: state
-    entity_id: 
+    entity_id:
       - !input default_challenge_entity
 
 #trigger:
@@ -188,14 +188,14 @@ action:
         sequence:
           - choose:
               - conditions:
-                - condition: or
-                  conditions:
-                    - condition: time
-                      after: "01:00:00"
-                      before: "04:00:00"
-                    - condition: time
-                      after: "12:00:00"
-                      before: "15:00:00"
+                  - condition: or
+                    conditions:
+                      - condition: time
+                        after: "01:00:00"
+                        before: "04:00:00"
+                      - condition: time
+                        after: "12:00:00"
+                        before: "15:00:00"
                 sequence:
                   - choose:
                       #Condition d'APPRECIATION ou de REF-APPRECIATION#
@@ -210,13 +210,13 @@ action:
                             target:
                               entity_id: !input thermostats
                           - choose:
-                              - conditions: "{{ water_heater|length > 0 }}"
+                              - conditions: "{{ water_heater is not none }}"
                                 sequence:
                                   - service: switch.turn_on
                                     target:
                                       entity_id: !input water_heater
                           - choose:
-                              - conditions: "{{ other_devices|length > 0 }}"
+                              - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                                 sequence:
                                   - service: switch.turn_on
                                     target:
@@ -228,19 +228,19 @@ action:
                         target:
                           entity_id: !input thermostats
                       - choose:
-                          - conditions: "{{ water_heater|length > 0 }}"
+                          - conditions: "{{ water_heater is not none }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input water_heater
                       - choose:
-                          - conditions: "{{ other_devices|length > 0 }}"
+                          - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input other_devices
 
-             #Condition de PRE-COLD si active dans l'integration Hilo#
+              #Condition de PRE-COLD si active dans l'integration Hilo#
               - conditions:
                   - condition: state
                     entity_id: !input default_challenge_entity
@@ -253,7 +253,7 @@ action:
                       entity_id: !input thermostats
                   - choose:
                       - conditions:
-                          - "{{ water_heater|length > 0 }}"
+                          - "{{ water_heater is not none }}"
                           - "{{ bool_ref_water_heater | bool }}"
                         sequence:
                           - service: switch.turn_off
@@ -261,24 +261,23 @@ action:
                               entity_id: !input water_heater
                   - choose:
                       - conditions:
-                          - "{{ other_devices|length > 0 }}"
+                          - "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                           - "{{ bool_ref_other | bool }}"
                         sequence:
                           - service: switch.turn_off
                             target:
                               entity_id: !input other_devices
-                        
 
               # Condition de REF-REDUCTION ou REDUCTION (DEFI)#
               - conditions:
-                - condition: or
-                  conditions:
-                    - condition: time
-                      after: "06:00:00"
-                      before: "10:00:00"
-                    - condition: time
-                      after: "17:00:00"
-                      before: "21:00:00"
+                  - condition: or
+                    conditions:
+                      - condition: time
+                        after: "06:00:00"
+                        before: "10:00:00"
+                      - condition: time
+                        after: "17:00:00"
+                        before: "21:00:00"
                 sequence:
                   - choose:
                       - conditions:
@@ -297,13 +296,13 @@ action:
                             target:
                               entity_id: !input thermostats
                           - choose:
-                              - conditions: "{{ water_heater|length > 0 }}"
+                              - conditions: "{{ water_heater is not none }}"
                                 sequence:
                                   - service: switch.turn_off
                                     target:
                                       entity_id: !input water_heater
                           - choose:
-                              - conditions: "{{ other_devices|length > 0 }}"
+                              - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                                 sequence:
                                   - service: switch.turn_off
                                     target:
@@ -316,13 +315,13 @@ action:
                         target:
                           entity_id: !input thermostats
                       - choose:
-                          - conditions: "{{ water_heater|length > 0 }}"
+                          - conditions: "{{ water_heater is not none }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input water_heater
                       - choose:
-                          - conditions: "{{ other_devices|length > 0 }}"
+                          - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
@@ -330,14 +329,14 @@ action:
 
               #Condition de PRE-HEAT si active#
               - conditions:
-                - condition: or
-                  conditions:
-                    - condition: time
-                      after: "04:00:00"
-                      before: "06:00:00"
-                    - condition: time
-                      after: "15:00:00"
-                      before: "17:00:00"
+                  - condition: or
+                    conditions:
+                      - condition: time
+                        after: "04:00:00"
+                        before: "06:00:00"
+                      - condition: time
+                        after: "15:00:00"
+                        before: "17:00:00"
                 sequence:
                   - choose:
                       - conditions:
@@ -353,13 +352,13 @@ action:
                             target:
                               entity_id: !input thermostats
                           - choose:
-                              - conditions: "{{ water_heater|length > 0 }}"
+                              - conditions: "{{ water_heater is not none }}"
                                 sequence:
                                   - service: switch.turn_on
                                     target:
                                       entity_id: !input water_heater
                           - choose:
-                              - conditions: "{{ other_devices|length > 0 }}"
+                              - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                                 sequence:
                                   - service: switch.turn_on
                                     target:
@@ -371,13 +370,13 @@ action:
                         target:
                           entity_id: !input thermostats
                       - choose:
-                          - conditions: "{{ water_heater|length > 0 }}"
+                          - conditions: "{{ water_heater is not none }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
                                   entity_id: !input water_heater
                       - choose:
-                          - conditions: "{{ other_devices|length > 0 }}"
+                          - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                             sequence:
                               - service: switch.turn_on
                                 target:
@@ -390,13 +389,13 @@ action:
                 target:
                   entity_id: !input thermostats
               - choose:
-                  - conditions: "{{ water_heater|length > 0 }}"
+                  - conditions: "{{ water_heater is not none }}"
                     sequence:
                       - service: switch.turn_on
                         target:
                           entity_id: !input water_heater
               - choose:
-                  - conditions: "{{ other_devices|length > 0 }}"
+                  - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
                     sequence:
                       - service: switch.turn_on
                         target:
@@ -409,13 +408,13 @@ action:
         target:
           entity_id: !input thermostats
       - choose:
-          - conditions: "{{ water_heater|length > 0 }}"
+          - conditions: "{{ water_heater is not none }}"
             sequence:
               - service: switch.turn_on
                 target:
                   entity_id: !input water_heater
       - choose:
-          - conditions: "{{ other_devices|length > 0 }}"
+          - conditions: "{{ other_devices is not none and other_devices | length > 0 and none not in other_devices }}"
             sequence:
               - service: switch.turn_on
                 target:
