@@ -153,6 +153,7 @@ triggers:
   - trigger: state
     entity_id: 
       - !input default_challenge_entity
+    to: "pre-cold"
 
 #trigger:
 #  - platform: time_pattern
